@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Environment..
-      uses: fifsky/ssh-action@master
+      uses: garygrossgarten/github-action-ssh@v0.6.3
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
-        pass: ${{ secrets.PASSWORD }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
         command: |
           msg() {
             echo -e "\e[1;32m$*\e[0m"
@@ -47,11 +47,11 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<code>Hello.</code>"
 
     - name: Sync Rom
-      uses: fifsky/ssh-action@master
+      uses: garygrossgarten/github-action-ssh@v0.6.3
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
-        pass: ${{ secrets.PASSWORD }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
         command: |
           set -e
           my_dir="$(pwd)"
@@ -103,11 +103,11 @@ jobs:
           rm -rf sync.log
 
     - name: Building Rom
-      uses: fifsky/ssh-action@master
+      uses: garygrossgarten/github-action-ssh@v0.6.3
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
-        pass: ${{ secrets.PASSWORD }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
         command: |
           my_dir="$(pwd)"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
@@ -125,11 +125,11 @@ jobs:
           bash -c "$command"
 
     - name: Push Rom
-      uses: fifsky/ssh-action@master
+      uses: garygrossgarten/github-action-ssh@v0.6.3
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
-        pass: ${{ secrets.PASSWORD }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
         command: |
           my_dir="$(pwd)"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
