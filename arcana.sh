@@ -7,8 +7,6 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 source build/envsetup.sh
 lunch aosp_rosy-userdebug
 export TZ=Asia/Jakarta
-export BUILD_USERNAME=rosy
-export BUILD_HOSTNAME=userngebug
-make bacon
+make bacon -j8
 
 # end
