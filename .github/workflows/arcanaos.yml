@@ -61,7 +61,7 @@ jobs:
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
-          bash -c "$command" 2>&1 | tee sync.log || true
+          bash -c "$command" |& tee -a sync.log
           
           set -exv
           a=$(grep 'Cannot remove project' sync.log -m1|| true)
