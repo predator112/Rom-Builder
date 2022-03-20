@@ -8,6 +8,7 @@ source build/envsetup.sh
 lunch aosp_rosy-userdebug
 export TZ=Asia/Jakarta
 export USE_NFSparts=true
+export USE_ARCANA_PACKAGE=yes
 make bacon -j8
 
 # end
