@@ -7,6 +7,7 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 source build/envsetup.sh
 lunch aosp_rosy-userdebug
 export TZ=Asia/Jakarta
+export USE_NFSparts=true
 make bacon -j8
 
 # end
