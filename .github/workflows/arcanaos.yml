@@ -17,7 +17,7 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
-          my_dir="$pwd"
+          my_dir="$(pwd)"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/arcana.sh -n $(expr $(grep '# build rom' $my_dir/arcana.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/arcana.sh)
@@ -39,7 +39,7 @@ jobs:
             curl -s https://api.telegram.org/bot$tg_token/sendSticker -d chat_id=$tg_id -d sticker="CAACAgIAAx0CXjGT1gACDRRhYsUKSwZJQFzmR6eKz2aP30iKqQACPgADr8ZRGiaKo_SrpcJQIQQ" \
             exit 1
           }
-          my_dir="$pwd"
+          my_dir="$(pwd)"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           device=$(grep unch $my_dir/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
           command="$(tail $my_dir/arcana.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/arcana.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
@@ -67,7 +67,7 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
-          my_dir="$pwd"
+          my_dir="$(pwd)"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           device="$(grep unch $my_dir/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           rel_date="$(date "+%Y%m%d")"
