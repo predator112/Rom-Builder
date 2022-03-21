@@ -34,6 +34,7 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
+          set -e
           finderr() {
             curl -s https://api.telegram.org/bot$tg_token/sendMessage -d chat_id=$tg_id -d text="==============================%0A<b>$Device Building Rom $rom_name Failed [❌]</b>%0A==============================" \
             curl -s https://api.telegram.org/bot$tg_token/sendSticker -d chat_id=$tg_id -d sticker="CAACAgIAAx0CXjGT1gACDRRhYsUKSwZJQFzmR6eKz2aP30iKqQACPgADr8ZRGiaKo_SrpcJQIQQ" \
