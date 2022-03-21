@@ -16,10 +16,10 @@ jobs:
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
         command: |
+          my_dir="$HOME"
           cd $my_dir/script
           rm -rf arcana.sh
           wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
-          my_dir="$HOME"
           rom_name="$(grep init $my_dir/script/arcana.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/script/arcana.sh -n $(expr $(grep '# build rom' $my_dir/script/arcana.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/script/arcana.sh)
