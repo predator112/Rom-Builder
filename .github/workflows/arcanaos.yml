@@ -57,7 +57,7 @@ jobs:
           ccache -z
           bash -c "$command"
           if ! [ -a "$ROMZIP" ]; then
-	        finderr
+            finderr
           fi
 
     - name: Push Rom
