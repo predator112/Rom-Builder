@@ -9,52 +9,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Environment..
-      uses: garygrossgarten/github-action-ssh@v0.6.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        command: |
-          msg() {
-            echo -e "\e[1;32m$*\e[0m"
-          }
-          my_dir="$(pwd)"
-          cd $my_dir
-          rm -rf arcana.sh
-          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
-          echo ===========================================
-          msg             Linux versions.
-          echo ===========================================
-          cat /etc/os*
-          echo ===========================================
-          echo
-          echo
-          echo
-          echo ===========================================
-          msg            Check user active.
-          echo ===========================================
-          w
-          echo ===========================================
-          echo
-          echo
-          echo
-          echo ===========================================
-          msg               Disk available.
-          echo ===========================================
-          lsblk && df -h
-          echo ===========================================
-          curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<code>Hello.</code>"
-
     - name: Sync Rom
-      uses: garygrossgarten/github-action-ssh@v0.6.3
+      uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
         command: |
           set -e
-          my_dir="$(pwd)"
+          my_dir="$pwd"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/arcana.sh -n $(expr $(grep '# build rom' $my_dir/arcana.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/arcana.sh)
@@ -64,16 +27,24 @@ jobs:
           bash -c "$command"
 
     - name: Building Rom
-      uses: garygrossgarten/github-action-ssh@v0.6.3
+      uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
         command: |
-          my_dir="$(pwd)"
+          finderr() {
+            curl -s https://api.telegram.org/bot$tg_token/sendMessage -d chat_id=$tg_id -d text="==============================%0A<b>$Device Building Rom $rom_name Failed [❌]</b>%0A==============================" \
+            curl -s https://api.telegram.org/bot$tg_token/sendSticker -d chat_id=$tg_id -d sticker="CAACAgIAAx0CXjGT1gACDRRhYsUKSwZJQFzmR6eKz2aP30iKqQACPgADr8ZRGiaKo_SrpcJQIQQ" \
+            exit 1
+          }
+          my_dir="$pwd"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           device=$(grep unch $my_dir/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
           command="$(tail $my_dir/arcana.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/arcana.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
+          rel_date="$(date "+%Y%m%d")"
+          ROMZIP="out/target/product/$device/*$rel_date*.zip"
           cd $my_dir/$rom_name
           export CCACHE_EXEC=/usr/bin/ccache
           export USE_CCACHE=1
@@ -84,15 +55,19 @@ jobs:
           ccache -o max_size=150G
           ccache -z
           bash -c "$command"
+          if ! [ -a "$ROMZIP" ]; then
+	        finderr
+          fi
 
     - name: Push Rom
-      uses: garygrossgarten/github-action-ssh@v0.6.3
+      uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
         command: |
-          my_dir="$(pwd)"
+          my_dir="$pwd"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           device="$(grep unch $my_dir/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           rel_date="$(date "+%Y%m%d")"
@@ -100,5 +75,5 @@ jobs:
           ota="out/target/product/$device/*ota*.zip"
           cd $my_dir/$rom_name
           rclone copy --drive-chunk-size 256M --stats 1s $output NFS:staging/$rom_name -P
-          echo "Download link https://needforspeed.projek.workers.dev/staging/$rom_name/$(cd out/target/product/$device && ls *$rel_date*.zip)"
+          curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<b>Download link:</b> https://needforspeed.projek.workers.dev/staging/$rom_name/$(cd out/target/product/$device && ls *$rel_date*.zip)"
           rm -rf $my_dir/$rom_name/out/target/product/$device
