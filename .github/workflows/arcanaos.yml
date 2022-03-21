@@ -21,6 +21,8 @@ jobs:
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/arcana.sh -n $(expr $(grep '# build rom' $my_dir/arcana.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/arcana.sh)
+          rm -rf arcana.sh
+          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
@@ -35,7 +37,7 @@ jobs:
         args: "-tt"
         command: |
           finderr() {
-            curl -s https://api.telegram.org/bot$tg_token/sendMessage -d chat_id=$tg_id -d text="==============================%0A<b>$Device Building Rom $rom_name Failed [❌]</b>%0A==============================" \
+            curl -s https://api.telegram.org/bot$tg_token/sendMessage -d chat_id=$tg_id -d text="==============================%0A<b>$Device Building Rom $rom_name Failed</b> [🚫]%0A==============================" \
             curl -s https://api.telegram.org/bot$tg_token/sendSticker -d chat_id=$tg_id -d sticker="CAACAgIAAx0CXjGT1gACDRRhYsUKSwZJQFzmR6eKz2aP30iKqQACPgADr8ZRGiaKo_SrpcJQIQQ" \
             exit 1
           }
