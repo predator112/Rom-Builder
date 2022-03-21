@@ -9,7 +9,7 @@ lunch aosp_rosy-userdebug
 export TZ=Asia/Jakarta
 export USE_NFSparts=true
 export USE_ARCANA_PACKAGE=yes
-curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="===================================%0A$device Starting Building Rom%0A<b>     $rom_name</b>%0A$(echo "${var_cache_report_config}")"
+curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="===================================%0A          $device Starting Building Rom%0A<b>           $rom_name</b>%0A$(echo "${var_cache_report_config}")"
 make bacon -j8
 
 # end
