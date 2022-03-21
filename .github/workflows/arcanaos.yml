@@ -16,14 +16,14 @@ jobs:
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
         command: |
-          my_dir="$(pwd)"
-          rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
-          command="$(head $my_dir/arcana.sh -n $(expr $(grep '# build rom' $my_dir/arcana.sh -n | cut -f1 -d:) - 1))"
-          only_sync=$(grep 'repo sync' $my_dir/arcana.sh)
-          rm -rf arcana.sh
-          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
+          my_dir="$HOME"
+          rom_name="$(grep init $my_dir/rom_name/arcana.sh -m 1 | cut -d / -f 4)"
+          command="$(head $my_dir/rom_name/arcana.sh -n $(expr $(grep '# build rom' $my_dir/rom_name/arcana.sh -n | cut -f1 -d:) - 1))"
+          only_sync=$(grep 'repo sync' $my_dir/rom_name/arcana.sh)
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
+          rm -rf arcana.sh
+          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
           rm -rf .repo/local_manifests
           bash -c "$command"
 
@@ -36,16 +36,16 @@ jobs:
         args: "-tt"
         command: |
           finderr() {
-            curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="==============================%0A<b>$Device Building Rom $rom_name Failed</b> [🚫]%0A==============================" \
+            curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="===================================%0A<b>$Device Building Rom $rom_name Failed</b> [🚫]%0A===================================" \
             curl -s https://api.telegram.org/bot$tg_token/sendSticker -d chat_id=$tg_id -d sticker="CAACAgIAAx0CXjGT1gACDRRhYsUKSwZJQFzmR6eKz2aP30iKqQACPgADr8ZRGiaKo_SrpcJQIQQ" \
             exit
           }
-          export my_dir="$(pwd)"
-          export rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
-          export device=$(grep unch $my_dir/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
-          export command="$(tail $my_dir/arcana.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/arcana.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
+          export my_dir="$HOME"
+          export rom_name="$(grep init $my_dir/rom_name/arcana.sh -m 1 | cut -d / -f 4)"
+          export device=$(grep unch $my_dir/rom_name/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
+          export command="$(tail $my_dir/rom_name/arcana.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/rom_name/arcana.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
-          export ROMZIP="out/target/product/$device/*$rel_date*.zip"
+          export ROMZIP="$my_dir/$rom_name/out/target/product/$device/*$rel_date*.zip"
           cd $my_dir/$rom_name
           export CCACHE_EXEC=/usr/bin/ccache
           export USE_CCACHE=1
@@ -68,9 +68,9 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
-          my_dir="$(pwd)"
-          rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
-          device="$(grep unch $my_dir/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          my_dir="$HOME"
+          rom_name="$(grep init $my_dir/rom_name/arcana.sh -m 1 | cut -d / -f 4)"
+          device="$(grep unch $my_dir/rom_name/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           rel_date="$(date "+%Y%m%d")"
           output="out/target/product/$device/*$rel_date*.zip"
           ota="out/target/product/$device/*ota*.zip"
