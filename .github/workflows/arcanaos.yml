@@ -15,9 +15,9 @@ jobs:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
         command: |
-          set -e
-          my_dir="$(pwd)"
+          my_dir="$pwd"
           rom_name="$(grep init $my_dir/arcana.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/arcana.sh -n $(expr $(grep '# build rom' $my_dir/arcana.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/arcana.sh)
