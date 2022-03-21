@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Sync Rom
-      uses: NFS86/ssh-action@master
+      uses: fifsky/ssh-action@v0.0.6
       with:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
@@ -27,7 +27,7 @@ jobs:
           bash -c "$command"
 
     - name: Building Rom
-      uses: NFS86/ssh-action@master
+      uses: fifsky/ssh-action@v0.0.6
       with:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
@@ -60,7 +60,7 @@ jobs:
           fi
 
     - name: Push Rom
-      uses: NFS86/ssh-action@master
+      uses: fifsky/ssh-action@v0.0.6
       with:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
