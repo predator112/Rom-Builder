@@ -59,7 +59,6 @@ jobs:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
-        args: "-tt"
         command: |
           my_dir="$HOME"
           rom_name="$(grep init $my_dir/script/arcana.sh -m 1 | cut -d / -f 4)"
@@ -69,6 +68,22 @@ jobs:
           ota="out/target/product/$device/*ota*.zip"
           cd $my_dir/$rom_name
           rclone copy --drive-chunk-size 256M --stats 1s $output NFS86:$device/$rom_name -P
+
+    - name: Send notif
+      uses: NFS86/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
+        command: |
+          my_dir="$HOME"
+          rom_name="$(grep init $my_dir/script/arcana.sh -m 1 | cut -d / -f 4)"
+          device="$(grep unch $my_dir/script/arcana.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          rel_date="$(date "+%Y%m%d")"
+          output="out/target/product/$device/*$rel_date*.zip"
+          ota="out/target/product/$device/*ota*.zip"
+          cd $my_dir/$rom_name
           curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<b>Build Succes.</b>[✅]"
           curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<b>Download link:</b> https://rombuilder.projek.workers.dev/$device/$rom_name/$(cd out/target/product/$device && ls *$rel_date*.zip)"
           rm -rf $my_dir/$rom_name/out/target/product/$device
