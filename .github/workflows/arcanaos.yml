@@ -34,7 +34,7 @@ jobs:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
-        args: "-tt -vvv"
+        args: "-tt -v"
         command: |
           export my_dir="$HOME"
           export rom_name="$(grep init $my_dir/script/arcana.sh -m 1 | cut -d / -f 4)"
