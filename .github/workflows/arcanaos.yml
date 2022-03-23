@@ -17,16 +17,56 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           my_dir="$HOME"
-          cd $my_dir/script
-          rm -rf arcana.sh
-          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
           rom_name="$(grep init $my_dir/script/arcana.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/script/arcana.sh -n $(expr $(grep '# build rom' $my_dir/script/arcana.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/script/arcana.sh)
+          cd $my_dir/script
+          rm -rf arcana.sh
+          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/arcana.sh
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
-          bash -c "$command"
+          bash -c "$command" |& tee -a sync.log
+          a=$(grep 'Cannot remove project' sync.log -m1|| true)
+          b=$(grep "^fatal: remove-project element specifies non-existent project" sync.log -m1 || true)
+          c=$(grep 'repo sync has finished' sync.log -m1 || true)
+          d=$(grep 'Failing repos:' sync.log -n -m1 || true)
+          e=$(grep 'fatal: Unable' sync.log || true)
+          if [[ $a == *'Cannot remove project'* ]]
+          then
+          a=$(echo $a | cut -d ':' -f2 | tr -d ' ')
+          rm -rf $a
+          repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
+          elif [[ $b == *'remove-project element specifies non-existent'* ]]
+          then exit 1
+          elif [[ $c == *'repo sync has finished'* ]]
+          then true
+          elif [[ $d == *'Failing repos:'* ]]
+          then
+          d=$(expr $(grep 'Failing repos:' sync.log -n -m 1| cut -d ':' -f1) + 1)
+          d2=$(expr $(grep 'Try re-running' sync.log -n -m1 | cut -d ':' -f1) - 1 )
+          fail_paths=$(head -n $d2 sync.log | tail -n +$d)
+          for path in $fail_paths
+          do
+          rm -rf $path
+          rm -rf .repo/project-objects/$path.git
+          rm -rf .repo/projects/$path.git
+          done
+          repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
+          elif [[ $e == *'fatal: Unable'* ]]
+          then
+          fail_paths=$(grep 'fatal: Unable' sync.log | cut -d ':' -f2 | cut -d "'" -f2)
+          for path in $fail_paths
+          do
+          rm -rf $path
+          rm -rf .repo/project-objects/$path.git
+          rm -rf .repo/projects/$path.git
+          done
+          repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
+          else
+          exit 1
+          fi
+          rm -rf sync.log
 
     - name: Building Rom
       uses: NFS86/ssh-action@master
