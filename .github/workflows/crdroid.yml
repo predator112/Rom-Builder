@@ -41,14 +41,12 @@ jobs:
           export device=$(grep unch $my_dir/script/crdroid.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
           export command="$(tail $my_dir/script/crdroid.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/crdroid.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
-          export ROMZIP="$my_dir/$rom_name/out/target/product/$device/system.img"
           cd $my_dir/$rom_name
           export CCACHE_EXEC=/usr/bin/ccache
           export USE_CCACHE=1
           export ALLOW_MISSING_DEPENDENCIES=true
           ccache -o compression=true
           ccache -o compression_level=1
-          ccache -o limit_multiple=1
           ccache -o max_size=150G
           ccache -z
           bash -c "$command"
