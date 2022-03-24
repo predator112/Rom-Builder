@@ -45,20 +45,16 @@ jobs:
                d2=$(expr $(grep 'Try re-running' sync.log -n -m1 | cut -d ':' -f1) - 1 )
                fail_paths=$(head -n $d2 sync.log | tail -n +$d)
                echo for path in $fail_paths
-               do
                rm -rf $path
                rm -rf .repo/project-objects/$path.git
                rm -rf .repo/projects/$path.git
-               done
                repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
           elif [ $e == *'fatal: Unable'* ]; then
                fail_paths=$(grep 'fatal: Unable' sync.log | cut -d ':' -f2 | cut -d "'" -f2)
                echo for path in $fail_paths
-               do
                rm -rf $path
                rm -rf .repo/project-objects/$path.git
                rm -rf .repo/projects/$path.git
-               done
                repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
           else
                exit 1
