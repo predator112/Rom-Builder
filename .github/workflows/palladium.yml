@@ -1,0 +1,88 @@
+name: Palladium-OS
+on: 
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Sync Rom
+      uses: NFS86/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        command: |
+          my_dir="$HOME"
+          rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
+          command="$(head $my_dir/script/palladium.sh -n $(expr $(grep '# build rom' $my_dir/script/palladium.sh -n | cut -f1 -d:) - 1))"
+          only_sync=$(grep 'repo sync' $my_dir/script/palladium.sh)
+          cd $my_dir/script
+          rm -rf *
+          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/palladium.sh
+          mkdir -p $my_dir/$rom_name
+          cd $my_dir/$rom_name
+          rm -rf .repo/local_manifests
+          bash -c "$command"
+
+    - name: Building Rom
+      uses: NFS86/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
+        command: |
+          export my_dir="$HOME"
+          export rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
+          export device=$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
+          export command="$(tail $my_dir/script/palladium.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/palladium.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
+          export rel_date="$(date "+%Y%m%d")"
+          cd $my_dir/$rom_name
+          export CCACHE_EXEC=/usr/bin/ccache
+          export USE_CCACHE=1
+          export ALLOW_MISSING_DEPENDENCIES=true
+          ccache -o compression=true
+          ccache -o compression_level=1
+          ccache -o max_size=150G
+          ccache -z
+          bash -c "$command"
+
+    - name: Push Rom
+      uses: NFS86/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        command: |
+          my_dir="$HOME"
+          rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
+          device="$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          rel_date="$(date "+%Y%m%d")"
+          output="out/target/product/$device/*$rel_date*.zip"
+          ota="out/target/product/$device/*ota*.zip"
+          cd $my_dir/$rom_name
+          rclone copy --drive-chunk-size 256M --stats 1s $output NFS86:$device/$rom_name -P
+
+    - name: Send notif
+      uses: NFS86/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        user: ${{ secrets.USERNAME }}
+        pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
+        command: |
+          my_dir="$HOME"
+          rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
+          device="$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          rel_date="$(date "+%Y%m%d")"
+          output="out/target/product/$device/*$rel_date*.zip"
+          ota="out/target/product/$device/*ota*.zip"
+          cd $my_dir/$rom_name
+          curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<b>Build $rom_name Succes.</b>[✅]%0A %0A<b>Download link:</b> https://rombuilder.projek.workers.dev/$device/$rom_name/$(cd out/target/product/$device && ls *$rel_date*.zip)"
+          rm -rf $my_dir/$rom_name/out/target/product/$device
+          cd $my_dir
+          rm -rf .repo*
