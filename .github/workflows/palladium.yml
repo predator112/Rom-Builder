@@ -20,9 +20,6 @@ jobs:
           rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
           command="$(head $my_dir/script/palladium.sh -n $(expr $(grep '# build rom' $my_dir/script/palladium.sh -n | cut -f1 -d:) - 1))"
           only_sync=$(grep 'repo sync' $my_dir/script/palladium.sh)
-          cd $my_dir/script
-          rm -rf *
-          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/palladium.sh
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
@@ -59,6 +56,9 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           my_dir="$HOME"
+          cd $my_dir/script
+          rm -rf *
+          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/palladium.sh
           rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
           device="$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           rel_date="$(date "+%Y%m%d")"
