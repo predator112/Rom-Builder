@@ -1,4 +1,4 @@
-name: Palladium-OS
+name: Rom-Builder
 on: 
   workflow_dispatch:
   push:
@@ -20,10 +20,10 @@ jobs:
           my_dir="$HOME"
           cd $my_dir/script
           rm -rf *
-          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/palladium.sh
-          rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
-          command="$(head $my_dir/script/palladium.sh -n $(expr $(grep '# build rom' $my_dir/script/palladium.sh -n | cut -f1 -d:) - 1))"
-          only_sync=$(grep 'repo sync' $my_dir/script/palladium.sh)
+          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/build.sh
+          rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
+          command="$(head $my_dir/script/build.sh -n $(expr $(grep '# build rom' $my_dir/script/build.sh -n | cut -f1 -d:) - 1))"
+          only_sync=$(grep 'repo sync' $my_dir/script/build.sh)
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
@@ -67,9 +67,9 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
-          export device=$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
-          export command="$(tail $my_dir/script/palladium.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/palladium.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
+          export rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
+          export device=$(grep unch $my_dir/script/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
+          export command="$(tail $my_dir/script/build.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
           cd $my_dir/$rom_name
           export CCACHE_EXEC=/usr/bin/ccache
@@ -88,8 +88,8 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           export my_dir="$HOME"
-          export rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
-          export device="$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          export rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
+          export device="$(grep unch $my_dir/script/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
@@ -105,8 +105,8 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export rom_name="$(grep init $my_dir/script/palladium.sh -m 1 | cut -d / -f 4)"
-          export device="$(grep unch $my_dir/script/palladium.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          export rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
+          export device="$(grep unch $my_dir/script/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
