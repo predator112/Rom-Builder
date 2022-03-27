@@ -51,7 +51,6 @@ jobs:
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
           elif [[ $e == 'error: Unable to fully sync the tree.' ]]
           then
-          rm -rf $(grep 'error: Unable to fully sync the tree.' sync.log | cut -d ':' -f2 | cut -d "'" -f2)
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
           else
           exit 1
