@@ -32,25 +32,20 @@ jobs:
           b=$(grep "^fatal: remove-project element specifies non-existent project" sync.log -m1 || true)
           c=$(grep 'repo sync has finished' sync.log -m1 || true)
           d=$(grep 'Failing repos:' sync.log -n -m1 || true)
-          e=$(grep 'fatal: Unable' sync.log || true)
-          if [[ $a == 'Cannot remove project' ]]
-          then
+          e=$(grep 'error: Unable to fully sync the tree.' sync.log || true)
+          if [[ $a == 'Cannot remove project' ]] then
           a=$(echo $a | cut -d ':' -f2)
           rm -rf $a
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
-          elif [[ $b == 'remove-project element specifies non-existent' ]]
-          then  exit 1
-          elif [[ $c == 'repo sync has finished' ]]
-          then true
-          elif [[ $d == 'Failing repos:' ]]
-          then
+          elif [[ $b == 'remove-project element specifies non-existent' ]] then  exit 1
+          elif [[ $c == 'repo sync has finished' ]] then true
+          elif [[ $d == 'Failing repos:' ]] then
           d=$(expr $(grep 'Failing repos:' sync.log -n -m 1| cut -d ':' -f1) + 1)
           d2=$(expr $(grep 'Try re-running' sync.log -n -m1 | cut -d ':' -f1) - 1 )
           rm -rf $(head -n $d2 sync.log | tail -n +$d)
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
-          elif [[ $e == 'fatal: Unable' ]]
-          then
-          rm -rf $(grep 'fatal: Unable to fully sync the tree.' sync.log | cut -d ':' -f2 | cut -d "'" -f2)
+          elif [[ $e == 'error: Unable to fully sync the tree.' ]] then
+          rm -rf $(grep 'error: Unable to fully sync the tree.' sync.log | cut -d ':' -f2 | cut -d "'" -f2)
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
           else
           exit 1
