@@ -15,9 +15,7 @@ jobs:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
-        args: "-tt"
         command: |
-          set -e
           my_dir="$HOME"
           cd $my_dir/script
           rm -rf *
