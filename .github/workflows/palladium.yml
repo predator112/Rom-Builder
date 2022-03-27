@@ -27,6 +27,7 @@ jobs:
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
+          rm -rf sync.log
           bash -c "$command" |& tee -a $HOME/$rom_name/sync.log || true
           a=$(grep 'Cannot remove project' sync.log -m1|| true)
           b=$(grep "^fatal: remove-project element specifies non-existent project" sync.log -m1 || true)
