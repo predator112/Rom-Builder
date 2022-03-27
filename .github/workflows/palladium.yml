@@ -28,7 +28,7 @@ jobs:
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
-          bash -c "$command" |& tee -a $HOME/$rom_name/sync.log || true
+          bash -c "$command"
 
     - name: Building Rom..
       uses: NFS86/ssh-action@master
