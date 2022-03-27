@@ -17,7 +17,7 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
-          set -exv
+          set -e
           my_dir="$HOME"
           cd $my_dir/script
           rm -rf *
@@ -29,6 +29,8 @@ jobs:
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
           bash -c "$command" |& tee -a $HOME/$rom_name/sync.log || true
+          
+          set -exv
           a=$(grep 'Cannot remove project' sync.log -m1|| true)
           b=$(grep "^fatal: remove-project element specifies non-existent project" sync.log -m1 || true)
           c=$(grep 'repo sync has finished' sync.log -m1 || true)
