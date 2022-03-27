@@ -1,6 +1,7 @@
 name: Palladium-OS
 on: 
   workflow_dispatch:
+  push:
 defaults:
   run:
     shell: bash
@@ -37,7 +38,8 @@ jobs:
           a=$(echo $a | cut -d ':' -f2)
           rm -rf $a
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
-          elif [[ $b == 'remove-project element specifies non-existent' ]; then  exit 1
+          elif [[ $b == 'remove-project element specifies non-existent' ]]
+          then  exit 1
           elif [[ $c == 'repo sync has finished' ]]
           then true
           elif [[ $d == 'Failing repos:' ]]
