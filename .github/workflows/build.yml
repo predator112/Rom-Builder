@@ -18,12 +18,14 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           my_dir="$HOME"
-          cd $my_dir/script
+          device=rosy
+          mkdir -p $my_dir/script/$device
+          cd $my_dir/script/$device
           rm -rf *
           wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/build.sh
-          rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
-          command="$(head $my_dir/script/build.sh -n $(expr $(grep '# build rom' $my_dir/script/build.sh -n | cut -f1 -d:) - 1))"
-          only_sync=$(grep 'repo sync' $my_dir/script/build.sh)
+          rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
+          command="$(head $my_dir/script/$device/build.sh -n $(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1))"
+          only_sync=$(grep 'repo sync' $my_dir/script/$device/build.sh)
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
@@ -67,9 +69,9 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
-          export device=$(grep unch $my_dir/script/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
-          export command="$(tail $my_dir/script/build.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
+          export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
+          export device=$(grep unch $my_dir/script/$device/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
+          export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
           cd $my_dir/$rom_name
           export CCACHE_EXEC=/usr/bin/ccache
@@ -78,7 +80,18 @@ jobs:
           ccache -o compression_level=1
           ccache -o max_size=150G
           ccache -z
-          bash -c "$command"
+          bash -c "$command" |& tee -a $HOME/$rom_name/build.log || true
+          a=$(grep '#### build completed successfully*####' build.log || true)
+          b=$(grep '#### failed to build some targets*####' build.log || true)
+          elif [[ $a == '#### build completed successfully*####' ]]
+          then true
+          elif [[ $b == '#### failed to build some targets*####' ]]
+          then
+          curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<code>$device Build $rom_name</code> <b>Error.</b>[❌]%0A %
+          else
+          exit 1
+          fi
+          rm -rf build.log
 
     - name: Upload Rom..
       uses: NFS86/ssh-action@master
@@ -88,8 +101,8 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           export my_dir="$HOME"
-          export rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
-          export device="$(grep unch $my_dir/script/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
+          export device="$(grep unch $my_dir/script/$device/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
@@ -105,8 +118,8 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export rom_name="$(grep init $my_dir/script/build.sh -m 1 | cut -d / -f 4)"
-          export device="$(grep unch $my_dir/script/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
+          export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
+          export device="$(grep unch $my_dir/script/$device/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
