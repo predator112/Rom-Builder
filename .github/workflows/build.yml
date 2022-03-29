@@ -69,8 +69,8 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
+          export device=rosy
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
-          export device=$(grep unch $my_dir/script/$device/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)
           export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
           cd $my_dir/$rom_name
@@ -99,8 +99,8 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           export my_dir="$HOME"
+          export device=rosy
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
-          export device="$(grep unch $my_dir/script/$device/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
@@ -116,8 +116,8 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
+          export device=rosy
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
-          export device="$(grep unch $my_dir/script/$device/build.sh -m 1 | cut -d ' ' -f 2 | cut -d _ -f 2 | cut -d - -f 1)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
