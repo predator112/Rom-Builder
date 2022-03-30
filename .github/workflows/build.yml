@@ -16,16 +16,17 @@ jobs:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
+        args: "-tt"
         command: |
           my_dir="$HOME"
-          device=rosy
+          export device=rosy
           mkdir -p $my_dir/script/$device
           cd $my_dir/script/$device
           rm -rf *
           wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/build.sh
-          rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
-          command="$(head $my_dir/script/$device/build.sh -n $(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1))"
-          only_sync=$(grep 'repo sync' $my_dir/script/$device/build.sh)
+          export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
+          export command="$(head $my_dir/script/$device/build.sh -n $(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1))"
+          export only_sync=$(grep 'repo sync' $my_dir/script/$device/build.sh)
           mkdir -p $my_dir/$rom_name
           cd $my_dir/$rom_name
           rm -rf .repo/local_manifests
@@ -36,22 +37,22 @@ jobs:
           c=$(grep 'repo sync has finished successfully.' sync.log -m1 || true)
           d=$(grep 'Failing repos:' sync.log -n -m1 || true)
           e=$(grep 'error: Unable to fully sync the tree.' sync.log || true)
-          if [[ $a == 'Cannot remove project' ]]
+          if [[ $a == *'Cannot remove project'* ]]
           then
           a=$(echo $a | cut -d ':' -f2)
           rm -rf $a
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
-          elif [[ $b == 'remove-project element specifies non-existent' ]]
+          elif [[ $b == *'remove-project element specifies non-existent'* ]]
           then  exit 1
-          elif [[ $c == 'repo sync has finished successfully.' ]]
+          elif [[ $c == *'repo sync has finished successfully.'* ]]
           then true
-          elif [[ $d == 'Failing repos:' ]]
+          elif [[ $d == *'Failing repos:'* ]]
           then
           d=$(expr $(grep 'Failing repos:' sync.log -n -m 1| cut -d ':' -f1) + 1)
           d2=$(expr $(grep 'Try re-running' sync.log -n -m1 | cut -d ':' -f1) - 1 )
           rm -rf $(head -n $d2 sync.log | tail -n +$d)
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
-          elif [[ $e == 'error: Unable to fully sync the tree.' ]]
+          elif [[ $e == *'error: Unable to fully sync the tree.'* ]]
           then
           rm -rf $(grep 'error: Unable to fully sync the tree.' sync.log | cut -d ':' -f2 | cut -d "'" -f2)
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
