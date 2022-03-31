@@ -153,7 +153,7 @@ jobs:
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
           cd $my_dir/$rom_name
-          curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<code>Build $rom_name:</code> <b>Succes.</b>[✅]%0A %0A<b>Download link:</b> https://rombuilder.projek.workers.dev/$device/$rom_name/$(cd out/target/product/$device && ls *$rel_date*.zip)"
+          curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="<code>$device Build $rom_name:</code> <b>Succes.</b>[✅]%0A %0A<b>Download link:</b> https://rombuilder.projek.workers.dev/$device/$rom_name/$(cd out/target/product/$device && ls *$rel_date*.zip)"
           rm -rf $my_dir/$rom_name/out/target/product/$device
           cd $my_dir
           rm -rf .repo*
