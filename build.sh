@@ -4,9 +4,9 @@ git clone https://github.com/NFS-projects/local_manifest --depth 1 -b PE-12 .rep
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8
 
 # build rom
+export NFS_BUILD_ROM_NAME=${rom_name}
 source build/envsetup.sh
 export TZ=Asia/Jakarta
-export NFS_BUILD_ROM_NAME=${rom_name}
 export USE_NFSparts=true
 export NFS_BUILD_VARIANT=normal
 # export USE_ARCANA_PACKAGE=yes

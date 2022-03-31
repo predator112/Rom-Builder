@@ -102,7 +102,7 @@ jobs:
           export my_dir="$HOME"
           export device=rosy
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
-          export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep 'build/envsetup.sh' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
+          export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
           cd $my_dir/$rom_name
           export CCACHE_EXEC=/usr/bin/ccache
