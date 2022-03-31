@@ -7,7 +7,7 @@ repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync 
 export NFS_BUILD_ROM_NAME=${rom_name}
 source build/envsetup.sh
 export TZ=Asia/Jakarta
-export USE_NFSparts=true
+export USE_NFSparts=false
 export NFS_BUILD_VARIANT=normal
 # export USE_ARCANA_PACKAGE=yes
 lunch aosp_rosy-userdebug
