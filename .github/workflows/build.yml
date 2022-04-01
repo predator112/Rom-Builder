@@ -105,6 +105,7 @@ jobs:
           export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
           cd $my_dir/$rom_name
+          export ALLOW_MISSING_DEPENDENCIES=true
           export CCACHE_EXEC=/usr/bin/ccache
           export USE_CCACHE=1
           ccache -o compression=true
