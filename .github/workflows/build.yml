@@ -137,6 +137,7 @@ jobs:
           export output="out/target/product/$device/*$rel_date*.zip"
           export ota="out/target/product/$device/*ota*.zip"
           cd $my_dir/$rom_name
+          rm -rf ota
           rclone copy --drive-chunk-size 256M --stats 1s $output NFS86:$device/$rom_name -P
 
     - name: Send notif..
