@@ -14,22 +14,26 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
+        user: medusa
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
           my_dir="$HOME"
-          export device=rosy # Change to your Device code name
+          export device="rosy" # Change to your Device code name
+          export git_name="NFS86 # Change to your github username
+          export git_repo="Rom-Builder" # Change to your github repo name
+          export git_branch="master" # Change to your github branch name
+          export git_script_name="build.sh" # Change to your script command build name
           mkdir -p $my_dir/script/$device
           cd $my_dir/script/$device
           rm -rf *
-          wget https://raw.githubusercontent.com/NFS86/Rom-Builder/master/build.sh
+          wget https://raw.githubusercontent.com/${git_name}/${git_repo}/${git_branch}/${git_script_name}
 
     - name: Sync Rom..
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
+        user: medusa
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
@@ -107,7 +111,7 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
+        user: medusa
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
@@ -140,7 +144,7 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
+        user: medusa
         pass: ${{ secrets.PASSWORD }}
         command: |
           export my_dir="$HOME"
@@ -157,7 +161,7 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: ${{ secrets.USERNAME }}
+        user: medusa
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
