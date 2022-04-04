@@ -55,6 +55,7 @@ jobs:
           e=$(grep 'fatal: Unable' sync.log || true)
           f=$(grep 'error.GitError' sync.log || true)
           g=$(grep 'error: Cannot checkout' sync.log || true)
+          h=$(grep 'error: Downloading network changes failed.' sync.log || true)
           if [[ $a == *'Cannot remove project'* ]]
           then
           a=$(echo $a | cut -d ':' -f2 | tr -d ' ')
@@ -104,6 +105,9 @@ jobs:
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
           else
           exit 1
+          elif [[ $h == *'error: Downloading network changes failed.'* ]]
+          then
+          repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
           fi
           rm -rf sync.log
 
