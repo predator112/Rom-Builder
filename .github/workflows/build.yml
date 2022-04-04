@@ -20,7 +20,7 @@ jobs:
         command: |
           my_dir="$HOME"
           export device="rosy" # Change to your Device code name
-          export git_name="NFS86 # Change to your github username
+          export git_name="NFS86" # Change to your github username
           export git_repo="Rom-Builder" # Change to your github repo name
           export git_branch="master" # Change to your github branch name
           export git_script_name="build.sh" # Change to your script command build name
