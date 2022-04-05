@@ -2,9 +2,6 @@ name: Redmi 5 (rosy)
 on: 
   workflow_dispatch:
   push:
-    branches: 
-      - master
-      - c3eru
 
 defaults:
   run:
@@ -14,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - if: github.repository_owner == 'c3eru'
     - name: Clone Script..
       uses: NFS86/ssh-action@master
       with:
