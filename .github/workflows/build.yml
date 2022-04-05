@@ -103,11 +103,11 @@ jobs:
           rm -rf .repo/project-objects/$i.git
           done
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
-          else
-          exit 1
           elif [[ $h == *'error: Downloading network changes failed.'* ]]
           then
           repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j4
+          else
+          exit 1
           fi
           rm -rf sync.log
 
