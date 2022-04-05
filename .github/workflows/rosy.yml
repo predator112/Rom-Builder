@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: 
-      - rosy
-      - NFS86
+      - master
+      - c3eru
 
 defaults:
   run:
