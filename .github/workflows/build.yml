@@ -156,8 +156,10 @@ jobs:
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
+          export shasum="out/target/product/$device/*$rel_date*.zip*sha*"
           export ota="out/target/product/$device/*ota*.zip"
           cd $my_dir/$rom_name
+          rm -rf $shasum
           rm -rf $ota
           rclone copy --drive-chunk-size 256M --stats 1s $output NFS86:$device/$rom_name -P
 
