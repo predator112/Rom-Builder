@@ -1,9 +1,9 @@
-name: Rom-Builder
+name: POCO M3/9T
 on: 
   workflow_dispatch:
   push:
     branches: 
-      - master
+      - juice
 
 defaults:
   run:
@@ -22,10 +22,10 @@ jobs:
         args: "-tt"
         command: |
           my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
+          export device="juice" # Change to your Device code name
           export git_name="NFS86" # Change to your github username
           export git_repo="Rom-Builder" # Change to your github repo name
-          export git_branch="master" # Change to your github branch name
+          export git_branch="juice" # Change to your github branch name
           export git_script_name="build.sh" # Change to your script command build name
           mkdir -p $my_dir/script/$device
           cd $my_dir/script/$device
@@ -41,8 +41,8 @@ jobs:
         args: "-tt"
         command: |
           my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export device_model="Redmi 5 (${device})" # Change to your Device model name
+          export device="juice" # Change to your Device code name
+          export device_model="POCO M3/9T (${device})" # Change to your Device model name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export command="$(head $my_dir/script/$device/build.sh -n $(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1))"
           export only_sync=$(grep 'repo sync' $my_dir/script/$device/build.sh)
@@ -123,8 +123,8 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export device_model="Redmi 5 (${device})" # Change to your Device model name
+          export device="juice" # Change to your Device code name
+          export device_model="POCO M3/9T (${device})" # Change to your Device model name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
@@ -155,7 +155,7 @@ jobs:
         pass: ${{ secrets.PASSWORD }}
         command: |
           export my_dir="$HOME"
-          export device=rosy # Change to your Device code name
+          export device=juice # Change to your Device code name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
@@ -175,8 +175,8 @@ jobs:
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export device_model="Redmi 5 (${device})" # Change to your Device model name
+          export device="juice" # Change to your Device code name
+          export device_model="POCO M3/9T (${device})" # Change to your Device model name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
