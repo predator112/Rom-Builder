@@ -12,3 +12,4 @@ lunch aosp_juice-userdebug
 curl -s -X POST "https://api.telegram.org/bot${tg_token}/sendMessage" -d chat_id="${tg_id}" -d "disable_web_page_preview=true" -d "parse_mode=html" -d text="===================================%0A<b>${device_model}</b> Starting Building Rom%0A<b>ROM:</b>$rom_name%0A$(echo "${var_cache_report_config}")"
 mka bacon
 # end
+
