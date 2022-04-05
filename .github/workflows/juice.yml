@@ -1,6 +1,8 @@
-name: POCO-M3
+name: POCO M3/9T
 on: 
   workflow_dispatch:
+    branches: 
+      - juice
   push:
     branches: 
       - juice
