@@ -5,6 +5,8 @@ on:
 defaults:
   run:
     shell: bash
+    branches: 
+      - master
 
 jobs:
   build:
