@@ -1,6 +1,6 @@
 # Building Status In Progress
-[![Rom-Builder](https://github.com/NFS86/Rom-Builder/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/NFS86/Rom-Builder/actions/workflows/build.yml)
-[![Redmi 5](https://github.com/NFS86/Rom-Builder/actions/workflows/rosy.yml/badge.svg?branch=rosy)](https://github.com/NFS86/Rom-Builder/actions/workflows/rosy.yml)
+[![Rom-Builder](https://github.com/NFS86/Rom-Builder/actions/workflows/build.yml/badge.svg)](https://github.com/NFS86/Rom-Builder/actions/workflows/build.yml)
+[![Redmi 5](https://github.com/NFS86/Rom-Builder/actions/workflows/rosy.yml/badge.svg)](https://github.com/NFS86/Rom-Builder/actions/workflows/rosy.yml)
 
 # Change this from workflows file yml
 * device="rosy"
