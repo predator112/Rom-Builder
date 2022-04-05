@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - rosy
+      - NFS86
 
 defaults:
   run:
