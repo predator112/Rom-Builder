@@ -10,8 +10,8 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'c3eru'
     steps:
-    - if: github.repository_owner == 'c3eru'
     - name: Clone Script..
       uses: NFS86/ssh-action@master
       with:
