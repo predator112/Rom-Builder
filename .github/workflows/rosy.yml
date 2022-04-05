@@ -1,6 +1,9 @@
 name: Redmi 5 (rosy)
-on: [workflow_dispatch, push]
-    branches: [rosy]
+on: 
+  workflow_dispatch:
+  push:
+    branches: 
+      - rosy
 
 defaults:
   run:
