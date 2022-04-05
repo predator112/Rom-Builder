@@ -2,11 +2,12 @@ name: Redmi 5
 on: 
   workflow_dispatch:
   push:
+    branches: 
+      - rosy
+
 defaults:
   run:
     shell: bash
-    branches: 
-      - rosy
 
 jobs:
   build:
