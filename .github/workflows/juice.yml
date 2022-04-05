@@ -1,4 +1,4 @@
-name: POCO M3/9T
+name: POCO-M3
 on: 
   workflow_dispatch:
   push:
