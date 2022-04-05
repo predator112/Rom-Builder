@@ -2,7 +2,8 @@ name: Redmi 5
 on: 
   workflow_dispatch:
   push:
-    branches: 
+  pull_request:
+    branches-ignore: 
       - rosy
 
 defaults:
