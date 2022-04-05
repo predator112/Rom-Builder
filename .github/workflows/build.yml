@@ -1,10 +1,6 @@
 name: Rom-Builder
 on: 
   workflow_dispatch:
-  push:
-    branches: 
-      - master
-
 defaults:
   run:
     shell: bash
