@@ -13,13 +13,13 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: medusa
+        user: AzureUser
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
           my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export git_name="NFS86" # Change to your github username
+          export device="whyred" # Change to your Device code name
+          export git_name="zacky46" # Change to your github username
           export git_repo="Rom-Builder" # Change to your github repo name
           export git_branch="master" # Change to your github branch name
           export git_script_name="build.sh" # Change to your script command build name
@@ -32,13 +32,13 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: medusa
+        user: AzureUser
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
           my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export device_model="Redmi 5 (${device})" # Change to your Device model name
+          export device="whyred" # Change to your Device code name
+          export device_model="Redmi Note 5 (${device})" # Change to your Device model name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export command="$(head $my_dir/script/$device/build.sh -n $(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1))"
           export only_sync=$(grep 'repo sync' $my_dir/script/$device/build.sh)
@@ -114,13 +114,13 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: medusa
+        user: AzureUser
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export device_model="Redmi 5 (${device})" # Change to your Device model name
+          export device="whyred" # Change to your Device code name
+          export device_model="Redmi Note 5 (${device})" # Change to your Device model name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export command="$(tail $my_dir/script/$device/build.sh -n +$(expr $(grep '# build rom' $my_dir/script/$device/build.sh -n | cut -f1 -d:) - 1)| head -n -1 | grep -v '# end')"
           export rel_date="$(date "+%Y%m%d")"
@@ -147,11 +147,11 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: medusa
+        user: AzureUser
         pass: ${{ secrets.PASSWORD }}
         command: |
           export my_dir="$HOME"
-          export device=rosy # Change to your Device code name
+          export device=whyred # Change to your Device code name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
@@ -166,13 +166,13 @@ jobs:
       uses: NFS86/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        user: medusa
+        user: AzureUser
         pass: ${{ secrets.PASSWORD }}
         args: "-tt"
         command: |
           export my_dir="$HOME"
-          export device="rosy" # Change to your Device code name
-          export device_model="Redmi 5 (${device})" # Change to your Device model name
+          export device="whyred" # Change to your Device code name
+          export device_model="Redmi Note 5 (${device})" # Change to your Device model name
           export rom_name="$(grep init $my_dir/script/$device/build.sh -m 1 | cut -d / -f 4)"
           export rel_date="$(date "+%Y%m%d")"
           export output="out/target/product/$device/*$rel_date*.zip"
